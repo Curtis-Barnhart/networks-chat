@@ -1,0 +1,6 @@
+*.o
+cchat
+test_lib
+test_var_str
+test_line_buff
+
