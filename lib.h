@@ -22,5 +22,15 @@ void var_str_to_3_buf(
     int width
 );
 
+/**
+* Connects to a socket on another machine.
+*
+* @param address location/ip address of the machine to connect to
+*     (e.g. "google.com", "127.0.0.1").
+* @port port number to connect to (e.g. "31337").
+* @return the socket file handle.
+*/
+int open_socket(char *address, char *port);
+
 #endif // !CCHAT_LIB_H
 

@@ -21,7 +21,6 @@ int open_socket() {
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
-    // if (getaddrinfo("10.90.132.102", "31337", &hints, &res)) {
     if (getaddrinfo("vmwardrobe.westmont.edu", "49153", &hints, &res)) {
         fprintf(stderr, "Oopsie we got an error getting address information :/\n");
         exit(1);
