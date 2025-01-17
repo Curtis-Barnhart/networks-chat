@@ -5,5 +5,6 @@ var_str.o: var_str.h var_str.c
 	gcc -c var_str.c
 
 clean:
-	rm *.o
+	rm -f *.o 2> /dev/null
+	rm -f test_var_str 2> /dev/null
 
