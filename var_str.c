@@ -40,6 +40,16 @@ int var_str_push_back_ch(struct var_str *vstr, char c) {
     return var_str_push_back(vstr, buf, 1);
 }
 
+char var_str_pop_back_ch(struct var_str *vstr) {
+    if (vstr->len > 0) {
+        char c = vstr->str[--vstr->len];
+        vstr->str[vstr->len] = '\0';
+        return c;
+    } else {
+        return '\0';
+    }
+}
+
 void var_str_clear(struct var_str *vstr) {
     vstr->len = 0;
     vstr->str[0] = '\0';

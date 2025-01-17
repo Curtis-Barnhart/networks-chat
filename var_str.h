@@ -52,6 +52,14 @@ int var_str_push_back(struct var_str *vstr, char *str, int len);
 int var_str_push_back_ch(struct var_str *vstr, char c);
 
 /**
+ * Deletes a single character from the string, if present.
+ *
+ * @param vstr the var_str to remove a char from
+ * @return the char that was removed ('\0' if no char was removed)
+ */
+char var_str_pop_back_ch(struct var_str *vstr);
+
+/**
  * Resets the string being help by vstr to be empty.
  *
  * @param vstr the var_str struct to clear.

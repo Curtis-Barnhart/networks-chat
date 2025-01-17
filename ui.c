@@ -15,20 +15,26 @@ void *w_input_manager(void *window) {
     // TODO: put the height... at least into some macro somewhere
     width -= 2, height = 3;
 
-    mvwprintw(w_input, 1, 1, "Hello!");
-    wrefresh(w_input);
-    getch();
-
-    struct var_str vstr = var_str_new(1),
+    struct var_str vstr = var_str_new(1);
     char *b1 = malloc(width - 1),
          *b2 = malloc(width - 1),
          *b3 = malloc(width - 1);
     while (1) {
         c = wgetch(w_input);
-        // TODO: may have to check what character is before using
-        var_str_push_back_ch(&vstr, c);
+        switch (c) {
+            case KEY_BACKSPACE:
+            case KEY_DC:
+            case 127:
+                var_str_pop_back_ch(&vstr);
+                break;
+            default:
+                var_str_push_back_ch(&vstr, c);
+                break;
+        }
         var_str_to_3_buf(&vstr, b1, b2, b3, width-2);
-        mvwprintw(w_input, 1, 1, "%s", vstr.str);
+        mvwprintw(w_input, 1, 1, "%s", b1);
+        mvwprintw(w_input, 2, 1, "%s", b2);
+        mvwprintw(w_input, 3, 1, "%s", b3);
         wrefresh(w_input);
     }
 }

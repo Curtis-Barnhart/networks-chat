@@ -15,9 +15,9 @@ int main(int argc, char *argv[]) {
         "8123456789"
         "912345";
     struct var_str vstr = var_str_new(100);
-    var_str_push_back(&vstr, buf, 96);
     char b1[11], b2[11], b3[11];
 
+    var_str_push_back(&vstr, buf, 96);
     var_str_to_3_buf(&vstr, b1, b2, b3, 10);
     printf("%s\n", b1);
     printf("%s\n", b2);
@@ -41,7 +41,15 @@ int main(int argc, char *argv[]) {
     printf("---------------\n");
 
     var_str_clear(&vstr);
-    var_str_push_back(&vstr, &buf[90], 66);
+    var_str_push_back(&vstr, &buf[90], 06);
+    var_str_to_3_buf(&vstr, b1, b2, b3, 10);
+    printf("%s\n", b1);
+    printf("%s\n", b2);
+    printf("%s\n", b3);
+    printf("---------------\n");
+
+    var_str_clear(&vstr);
+    var_str_push_back(&vstr, &buf[86], 10);
     var_str_to_3_buf(&vstr, b1, b2, b3, 10);
     printf("%s\n", b1);
     printf("%s\n", b2);

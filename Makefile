@@ -1,7 +1,7 @@
 GCC_FLAGS = -g
 
-cchat: ui.c var_str.o var_str.h
-	gcc $(GCC_FLAGS) -lncurses -o cchat ui.c
+cchat: ui.c var_str.o var_str.h lib.o lib.h
+	gcc $(GCC_FLAGS) -lncurses -o cchat ui.c lib.o var_str.o
 
 lib.o: lib.c lib.h var_str.h
 	gcc $(GCC_FLAGS) -c lib.c
