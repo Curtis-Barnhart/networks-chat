@@ -4,10 +4,7 @@
 #include <stdio.h>
 #include <memory.h>
 
-struct var_str {
-    char *str; // internal str buffer
-    int len, cap; // cap includes null term, len does not!
-};
+#include "var_str.h"
 
 struct var_str var_str_new(int capacity) {
     assert(capacity > 0);
@@ -23,15 +20,6 @@ void var_str_del(struct var_str *vstr) {
     free(vstr->str);
 }
 
-/**
- * Copies at most len chars from str into vstr string buffer,
- * terminating if null character encountered.
- *
- * @param vstr the var_str to push str back to
- * @param str a null terminated string buffer
- * @param len the length of the string in str
- * @return 0 if success else 1
- */
 int var_str_push_back(struct var_str *vstr, char *str, int len) {
     if (len < 1) { return 0; }
     if ((vstr->cap - vstr->len - 1) < len) {
@@ -46,7 +34,13 @@ int var_str_push_back(struct var_str *vstr, char *str, int len) {
     return 0;
 }
 
-int var_str_clear(struct var_str *vstr) {
+int var_str_push_back_ch(struct var_str *vstr, char c) {
+    char buf[2];
+    buf[0] = c, buf[1] = '\0';
+    return var_str_push_back(vstr, buf, 1);
+}
+
+void var_str_clear(struct var_str *vstr) {
     vstr->len = 0;
     vstr->str[0] = '\0';
 }
