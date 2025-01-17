@@ -18,6 +18,8 @@ void var_str_to_3_buf(
     }
     skipped = lines > 3 ? (lines - 3)*width : 0;
 
+    // TODO: fix this yeah I know it just made sense at the time I was thinking
+    // logically not machinally
     if (remain) {
         --lines;
     }

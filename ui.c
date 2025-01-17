@@ -27,11 +27,16 @@ void *w_input_manager(void *window) {
             case 127:
                 var_str_pop_back_ch(&vstr);
                 break;
+            case '\n':
+                var_str_clear(&vstr);
+                break;
             default:
                 var_str_push_back_ch(&vstr, c);
                 break;
         }
         var_str_to_3_buf(&vstr, b1, b2, b3, width-2);
+        wclear(w_input);
+        box(w_input, 0, 0);
         mvwprintw(w_input, 1, 1, "%s", b1);
         mvwprintw(w_input, 2, 1, "%s", b2);
         mvwprintw(w_input, 3, 1, "%s", b3);
