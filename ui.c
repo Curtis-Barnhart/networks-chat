@@ -64,19 +64,6 @@ void *w_input_manager(void *data) {
     }
 }
 
-void *w_disp_manager(void *data) {
-    // get the window * and socket descriptor out of passed data
-    // remember, it's ours now so we have to free it
-    WINDOW *w_input = ((struct w_manager_data *) data)->window;
-    int socket_fd = ((struct w_manager_data *) data)->socket_fd;
-    free(data);
-
-    int width, height;
-    getmaxyx(w_input, height, width);
-    // TODO: put the height... at least into some macro somewhere
-    width -= 2, height -= 2;
-}
-
 int main(int argc, char *argv[]) {
     initscr();			        /* Start curses mode must be first */
     noecho();                   /* So that users input does not show up */
@@ -123,8 +110,9 @@ int main(int argc, char *argv[]) {
         line_buff_push_back(&lb, msg);
 
         wclear(w_disp);
+        box(w_disp, 0, 0);
         struct line_node *line_string = lb.head->next;
-        for (int l_num = 1; l_num < x_sz - 2; l_num++) {
+        for (int l_num = 1; l_num < y_sz - 6; l_num++) {
             mvwprintw(w_disp, l_num, 1, "%s", line_string->str);
             line_string = line_string->next;
         }

@@ -1,4 +1,4 @@
-GCC_FLAGS = -g
+GCC_FLAGS = 
 
 cchat: ui.c var_str.o var_str.h lib.o lib.h line_buff.o line_buff.h
 	gcc $(GCC_FLAGS) -lncurses -o cchat ui.c lib.o var_str.o line_buff.o
