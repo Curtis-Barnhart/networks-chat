@@ -1,5 +1,5 @@
-#ifndef CCHAT_VAR_STR_H
-#define CCHAT_VAR_STR_H
+#ifndef CCC_VAR_STR_H
+#define CCC_VAR_STR_H
 
 #include <assert.h>
 #include <stdlib.h>
@@ -66,5 +66,5 @@ char var_str_pop_back_ch(struct var_str *vstr);
  */
 void var_str_clear(struct var_str *vstr);
 
-#endif // !CCHAT_VAR_STR_H
+#endif // !CCC_VAR_STR_H
 

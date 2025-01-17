@@ -6,22 +6,23 @@
 #include <sys/socket.h>
 
 #include "var_str.h"
+#include "line_buff.h"
 #include "lib.h"
 
-struct w_input_manager_data {
+struct w_manager_data {
     WINDOW *window;
     int socket_fd;
 };
 
-void *w_input_manager(void *window) {
+void *w_input_manager(void *data) {
     // get the window * and socket descriptor out of passed data
     // remember, it's ours now so we have to free it
-    WINDOW *w_input = ((struct w_input_manager_data *) window)->window;
-    int socket_fd = ((struct w_input_manager_data *) window)->socket_fd;
-    free(window);
+    WINDOW *w_input = ((struct w_manager_data *) data)->window;
+    int socket_fd = ((struct w_manager_data *) data)->socket_fd;
+    free(data);
 
     int c;
-    int width, height, pos_x, pos_y;
+    int width, height;
     getmaxyx(w_input, height, width);
     // TODO: put the height... at least into some macro somewhere
     width -= 2, height = 3;
@@ -29,6 +30,7 @@ void *w_input_manager(void *window) {
     // get a variable length string to store whatever the user has typed
     // each bn buffer is for one line in the text input box on screen
     struct var_str vstr = var_str_new(1);
+    // no need to free because thread gets in loop
     char *b1 = malloc(width - 1),
          *b2 = malloc(width - 1),
          *b3 = malloc(width - 1);
@@ -62,18 +64,30 @@ void *w_input_manager(void *window) {
     }
 }
 
+void *w_disp_manager(void *data) {
+    // get the window * and socket descriptor out of passed data
+    // remember, it's ours now so we have to free it
+    WINDOW *w_input = ((struct w_manager_data *) data)->window;
+    int socket_fd = ((struct w_manager_data *) data)->socket_fd;
+    free(data);
+
+    int width, height;
+    getmaxyx(w_input, height, width);
+    // TODO: put the height... at least into some macro somewhere
+    width -= 2, height -= 2;
+}
+
 int main(int argc, char *argv[]) {
     initscr();			        /* Start curses mode must be first */
     noecho();                   /* So that users input does not show up */
     // TODO: Is this necessary?
 	refresh();		            /* Print it on to the real screen */
 
-    // This pause is necessary so that we can hook in to debug
+    // This pause is necessary when debugging so that we can hook in
     // with gdb while the program waits
-    getch();
+    // getch();
 
     int x_sz, y_sz;
-    int w_input_width, w_input_height, w_input_x, w_input_y;
     getmaxyx(stdscr, y_sz, x_sz);
     // we just nab 5 lines for the text entry box,
     // so make sure that it fits lol
@@ -81,7 +95,6 @@ int main(int argc, char *argv[]) {
     // w1 will be upper window, w2 will be lower window
     WINDOW *w_disp = newwin(y_sz - 5, x_sz, 0, 0),
            *w_input = newwin(5, x_sz, y_sz - 5, 0);
-    w_input_height = 3, w_input_x = x_sz - 2, w_input_x = 1, w_input_y = y_sz - 4;
     box(w_disp, 0, 0);
     box(w_input, 0, 0);
     wrefresh(w_disp);
@@ -89,13 +102,34 @@ int main(int argc, char *argv[]) {
 
     // We are going to give this data to w_input_manager
     // so they will free it and we will not touch it again
-    struct w_input_manager_data *wimd = malloc(sizeof(struct w_input_manager_data));
+    struct w_manager_data *wimd = malloc(sizeof(struct w_manager_data));
     wimd->window = w_input;
-    wimd->socket_fd = open_socket(argv[1], argv[2]);
+    int sockfd = open_socket(argv[1], argv[2]);
+    wimd->socket_fd = sockfd;
     
     pthread_t w_input_th;
     int w_input_th_id = pthread_create(&w_input_th, NULL, w_input_manager, (void *) wimd);
 
+    char msg[32];
+    int msg_size = sizeof(msg);
+    struct line_buff lb = line_buff_new(y_sz - 7, x_sz - 2);
+    while (1) {
+        memset(msg, 0, msg_size);
+        if (recv(sockfd, msg, msg_size - 1, 0) < 1) {
+            printf("Oopsie we got an error reading from the socket :/\n");
+            exit(4);
+        }
+        printf("Hey we got something!\n");
+        line_buff_push_back(&lb, msg);
+
+        wclear(w_disp);
+        struct line_node *line_string = lb.head->next;
+        for (int l_num = 1; l_num < x_sz - 2; l_num++) {
+            mvwprintw(w_disp, l_num, 1, "%s", line_string->str);
+            line_string = line_string->next;
+        }
+        wrefresh(w_disp);
+    }
 
     /*
      * This is what I would do if the program had a way to exit nicely.
