@@ -1,4 +1,6 @@
 #include <assert.h>
+#include <stdio.h>
+#include <string.h>
 #include <memory.h>
 
 #include <ncurses.h>
@@ -65,6 +67,10 @@ void *w_input_manager(void *data) {
 }
 
 int main(int argc, char *argv[]) {
+    if (argc != 4) {
+        printf("Usage: cchat <address> <port> <username>\n");
+        exit(5);
+    }
     initscr();			        /* Start curses mode must be first */
     noecho();                   /* So that users input does not show up */
     // TODO: Is this necessary?
@@ -93,6 +99,12 @@ int main(int argc, char *argv[]) {
     wimd->window = w_input;
     int sockfd = open_socket(argv[1], argv[2]);
     wimd->socket_fd = sockfd;
+
+    // first send name
+    struct var_str username = var_str_new(1);
+    var_str_push_back(&username, argv[3], strlen(argv[3]));
+    var_str_push_back_ch(&username, '\n');
+    send(sockfd, username.str, username.len, 0);
     
     pthread_t w_input_th;
     int w_input_th_id = pthread_create(&w_input_th, NULL, w_input_manager, (void *) wimd);
