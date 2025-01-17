@@ -1,3 +1,6 @@
+#ifndef CCHAT_VAR_STR_H
+#define CCHAT_VAR_STR_H
+
 #include <assert.h>
 #include <stdlib.h>
 #include <memory.h>
@@ -34,7 +37,7 @@ void var_str_del(struct var_str *vstr);
  *
  * @param vstr the var_str to push str back to.
  * @param str a null terminated string buffer.
- * @param len the length of the string in str.
+ * @param len the length of the string in str (not counting null terminator).
  * @return 0 if success else 1.
  */
 int var_str_push_back(struct var_str *vstr, char *str, int len);
@@ -54,4 +57,6 @@ int var_str_push_back_ch(struct var_str *vstr, char c);
  * @param vstr the var_str struct to clear.
  */
 void var_str_clear(struct var_str *vstr);
+
+#endif // !CCHAT_VAR_STR_H
 
