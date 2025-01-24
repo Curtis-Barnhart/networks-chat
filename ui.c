@@ -71,10 +71,10 @@ int main(int argc, char *argv[]) {
         printf("Usage: cchat <address> <port> <username>\n");
         exit(5);
     }
-    initscr();			        /* Start curses mode must be first */
+    initscr();                  /* Start curses mode must be first */
     noecho();                   /* So that users input does not show up */
     // TODO: Is this necessary?
-	refresh();		            /* Print it on to the real screen */
+    refresh();                  /* Print it on to the real screen */
 
     // This pause is necessary when debugging so that we can hook in
     // with gdb while the program waits
@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
     var_str_push_back(&username, argv[3], strlen(argv[3]));
     var_str_push_back_ch(&username, '\n');
     send(sockfd, username.str, username.len, 0);
-    
+
     pthread_t w_input_th;
     int w_input_th_id = pthread_create(&w_input_th, NULL, w_input_manager, (void *) wimd);
 
@@ -138,7 +138,7 @@ int main(int argc, char *argv[]) {
 
     delwin(w_disp);
     delwin(w_input);
-	endwin();
+    endwin();
     */
 
 	return 0;
