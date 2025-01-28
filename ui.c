@@ -73,6 +73,7 @@ int main(int argc, char *argv[]) {
     }
     initscr();                  /* Start curses mode must be first */
     noecho();                   /* So that users input does not show up */
+    curs_set(0);                /* make cursor invisible */
     // TODO: Is this necessary?
     refresh();                  /* Print it on to the real screen */
 
